@@ -44,13 +44,14 @@
             this.bRenew = new System.Windows.Forms.Button();
             this.tMessage = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.SettingBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // Dialer
             // 
-            // TODO: “this.Dialer.CallbackId”的代码生成失败，原因是出现异常“无效的基元类型: System.IntPtr。请考虑使用 CodeObjectCreateExpression。”。
+// TODO: “”的代码生成失败，原因是出现异常“无效的基元类型: System.IntPtr。请考虑使用 CodeObjectCreateExpression。”。
             this.Dialer.Credentials = null;
             this.Dialer.EapOptions = new DotRas.RasEapOptions(false, false, false);
             this.Dialer.Options = new DotRas.RasDialOptions(false, false, false, false, false, false, false, false, false, false);
@@ -153,7 +154,7 @@
             // 
             // tMessage
             // 
-            this.tMessage.Location = new System.Drawing.Point(12, 274);
+            this.tMessage.Location = new System.Drawing.Point(11, 331);
             this.tMessage.Multiline = true;
             this.tMessage.Name = "tMessage";
             this.tMessage.ReadOnly = true;
@@ -168,20 +169,31 @@
             this.pictureBox1.Size = new System.Drawing.Size(266, 81);
             this.pictureBox1.TabIndex = 7;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Visible = true;
+            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
             // 
             // VPNClient
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(291, 380);
+            this.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.ClientSize = new System.Drawing.Size(288, 430);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.tMessage);
             this.Controls.Add(this.bRenew);
             this.Controls.Add(this.bDisconnect);
             this.Controls.Add(this.bConnect);
             this.Controls.Add(this.SettingBox);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "VPNClient";
-            this.Text = "VPN网络加速器";
+            this.Text = "牛仔加速器";
+            this.Load += new System.EventHandler(this.VPNClient_Load);
             this.SettingBox.ResumeLayout(false);
             this.SettingBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -207,6 +219,7 @@
         private DotRas.RasPhoneBook AllUsersPhoneBook;
         private DotRas.RasDialer Dialer;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
     }
 }
 

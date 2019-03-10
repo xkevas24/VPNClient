@@ -10,15 +10,16 @@ using DotRas;
 using System.Net;
 using System.Configuration;
 using System.Security.Cryptography;
+using System.IO;
 
 namespace VPNClient
 {
     public partial class VPNClient : Form
     {
 
-        public const string sEntryName = "VPN Connection";
+        public const string sEntryName = "主服务器";
         private RasHandle handle = null;
-        
+
 
         public VPNClient()
         {
@@ -33,6 +34,21 @@ namespace VPNClient
 
             //setting UI
             bDisconnect.Enabled = false;
+
+            //创建rasphone.pbk
+            if (Directory.Exists(@"C:/ProgramData/Microsoft/Network/Connections/Pbk") == false)//如果不存在
+            {
+                Directory.CreateDirectory(@"C:/ProgramData/Microsoft/Network/Connections/Pbk");
+            }
+            if (!File.Exists(@"C:/ProgramData/Microsoft/Network/Connections/Pbk/rasphone.pbk"))
+            {
+                //复制文件
+                File.Copy(Application.StartupPath + @"\rasphone.pbk", @"C:/ProgramData/Microsoft/Network/Connections/Pbk/rasphone.pbk", false);
+            }
+            this.MaximizeBox = false;
+            //this.MinimizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.ShowInTaskbar = false;
         }
 
         private void bConnect_Click(object sender, EventArgs e)
@@ -75,8 +91,9 @@ namespace VPNClient
             {
                 try
                 {
-                    RasEntry entry = RasEntry.CreateVpnEntry(sEntryName, sVpnIp, RasVpnStrategy.L2tpOnly,
-                        RasDevice.GetDeviceByName("(L2TP)", RasDeviceType.Vpn));
+                    RasEntry entry = RasEntry.CreateVpnEntry(sEntryName, sVpnIp, RasVpnStrategy.PptpOnly, //L2tpOnly
+                                                                                                          //RasDevice.GetDeviceByName("(L2TP)", RasDeviceType.Vpn));
+                        RasDevice.GetDeviceByName("(PPTP)", RasDeviceType.Vpn));
                     entry.EncryptionType = RasEncryptionType.Optional;
 
                     this.AllUsersPhoneBook.Entries.Add(entry);
@@ -122,9 +139,7 @@ namespace VPNClient
                 this.tMessage.AppendText("连接成功!\r\n");
                 bConnect.Enabled = false;
                 bDisconnect.Enabled = true;
-
                 //Account state changed.
-                
             }
 
             if (!e.Connected)
@@ -163,7 +178,7 @@ namespace VPNClient
 
             Encoding encode = new UTF8Encoding();
             SetConfigValue("password", Convert.ToBase64String(encode.GetBytes(tUserkey.Text)));
-            
+
         }
 
         private static void SetConfigValue(string key, string value)
@@ -198,7 +213,57 @@ namespace VPNClient
 
         private void bRenew_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.taobao.com");
+            System.Diagnostics.Process.Start("http://taobao.com");
+        }
+
+        private void VPNClient_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private string Info_PHP(string url, byte[] postdata)
+        {
+            try
+            {
+                WebClient wc = new WebClient();
+                wc.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                byte[] postData = postdata;
+                byte[] responseData = wc.UploadData(url, "POST", postData); // 得到返回字符流
+                var resstring = Encoding.UTF8.GetString(responseData);
+                wc.Dispose();
+                return resstring;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("连接超时！");
+                System.Environment.Exit(0);
+                throw new Exception("连接超时");
+            }
+
+
+        }
+        // Hide to system tray
+        private void VPNClient_Deactivate(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Hide();
+            }
+        }
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+                
+            }
         }
 
     }
